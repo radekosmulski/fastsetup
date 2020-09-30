@@ -1,9 +1,8 @@
 IP=`openstack server show fs -f shell -c addresses | tr -cd [[:digit:],[=.=]]`
 
-rsync monit.sh ubuntu@$IP:/home/ubuntu/fastsetup
+# you can send files the remote host using the following command
+# rsync <file_path> ubuntu@$IP:<target_directory>
+
 ssh ubuntu@$IP bash -e << EOF
-  cd fastsetup
-  MONIT_MAILSERVER_ADDRESS=$MONIT_MAILSERVER_ADDRESS MONIT_MAILSERVER_PORT=$MONIT_MAILSERVER_PORT \
-  MONIT_MAILSERVER_USERNAME=$MONIT_MAILSERVER_USERNAME MONIT_MAILSERVER_PASSWORD=$MONIT_MAILSERVER_PASSWORD \
-  MONIT_ALERT_ADDRESSEE=$MONIT_ALERT_ADDRESSEE source monit.sh
+  echo Type commands here you would like executed on remote host
 EOF

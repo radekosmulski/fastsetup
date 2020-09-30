@@ -7,6 +7,3 @@ openstack server create fs --image $IMAGE_NAME --flavor t5sd.large --key-name $S
 IP=`openstack server show fs -f shell -c addresses | tr -cd [[:digit:],[=.=]]`
 
 sleep 20
-ssh ubuntu@$IP bash -e << EOF
-  echo Place the commands you would like to run on remote host upon creation here.
-EOF
