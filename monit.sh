@@ -7,7 +7,7 @@
 
 set -e
 
-for VARIABLE in "$MONIT_MAILSERVER_ADDRESS" "$MONIT_MAILSERVER_PORT" "$MONIT_MAILSERVER_USERNAME" "$MONIT_MAILSERVER_PASSWORD" "$MONIT_ALERT_ADDRESSEE" "$MONIT_ALERT_SENDER"
+for VARIABLE in "$MONIT_MAILSERVER_ADDRESS" "$MONIT_MAILSERVER_PORT" "$MONIT_MAILSERVER_USERNAME" "$MONIT_MAILSERVER_PASSWORD" "$MONIT_ALERT_ADDRESSEE" "$MONIT_ALERT_SENDER" "$NEWPASS"
 do
   if [[ -z "$VARIABLE" ]]; then
     echo 'Please make sure you set all the needed environmental variables (consult monit.sh for more information)'
@@ -15,7 +15,7 @@ do
   fi
 done
 
-echo $PASS | sudo -S apt-get install -y monit
+echo $NEWPASS | sudo -S apt-get install -y monit
 
 sudo perl -p -i -e 's/set daemon 120/set daemon 30/' /etc/monit/monitrc
 sudo perl -p -i -e 's/#   with start delay 240/  with start delay 60/' /etc/monit/monitrc
