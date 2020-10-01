@@ -1,15 +1,22 @@
 # This script uses the openstack api. It was developed to work with https://www.genesishosting.com/.
 #
-# I use this script to help me test fastsetup. This is also a good way of automating the setup
-# if we want to work on additions. I deploy and configure the instance using this script,
-# then create a snapshot and can quickly revert back to the state before I started introducing changes.
+# What are it's uses? It allows you to document and retain the configuration steps for creating
+# an instance. All you have to do is to retain the template  you used to configure
+# the instance (for a starting point please see instance_templates/default.sh).
+#
+# Further to that, I use this script to help me test fastsetup. It is also very helpful when you
+# want to work on additions / modifications, especially if you use the snapshotting functionality
+# available through the openstack CLI.
 
 set -e
 
-if [[ -z "$SSH_KEY_NAME" ]]; then
-  echo 'Please set the $SSH_KEY_NAME'
-  exit 1
-fi
+for VARIABLE in "$SSH_KEY_NAME" "$INSTALL_MONIT" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL"
+do
+  if [[ -z "$VARIABLE" ]]; then
+    echo Please make sure you set all the needed environmental variables
+    exit 1
+  fi
+done
 
 function fail() { echo $1 ; exit 1 ; }
 
@@ -26,7 +33,7 @@ EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
   cd fastsetup
-  sudo NEWPASS=pass REBOOT=false ./ubuntu-initial.sh
+  sudo NEWPASS=$NEWPASS REBOOT=false ./ubuntu-initial.sh
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Issue running sudo as user ubuntu"
@@ -38,15 +45,21 @@ sleep 10
 
 ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
   cd fastsetup
-  NAME="Test Name" EMAIL="test@test.com" source dotfiles.sh
+  GIT_NAME=$GIT_NAME GIT_EMAIL=$GIT_EMAIL source dotfiles.sh
 
 EOF
 
+if [ "$INSTALL_MONIT" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
   cd fastsetup
   MONIT_MAILSERVER_ADDRESS=$MONIT_MAILSERVER_ADDRESS MONIT_MAILSERVER_PORT=$MONIT_MAILSERVER_PORT \
   MONIT_MAILSERVER_USERNAME=$MONIT_MAILSERVER_USERNAME MONIT_MAILSERVER_PASSWORD=$MONIT_MAILSERVER_PASSWORD \
   MONIT_ALERT_ADDRESSEE=$MONIT_ALERT_ADDRESSEE MONIT_ALERT_SENDER=$MONIT_ALERT_SENDER source monit.sh
+EOF
+fi
+
+ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
+  echo pass | sudo -S apt install -y fail2ban
 EOF
 
 # Remove instance

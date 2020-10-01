@@ -1,13 +1,5 @@
 # This script installs monit and configures it for system monitoring.
-# It expects that the following enviromental variables are set:
-# MONIT_MAILSERVER_ADDRESS
-# MONIT_MAILSERVER_PORT
-# MONIT_MAILSERVER_USERNAME
-# MONIT_MAILSERVER_PASSWORD
-# MONIT_ALERT_ADDRESSEE
-#
-# The easiest way to set these values is to copy the list above into a file, assign values
-# and source it.
+# You can use the environment_template.sh to set the necessary variables.
 #
 # The configuration below includes default values for loadavg that are likely to make sense
 # for a single vCPU vm. If you are planning on using a vm that will have access to a higher

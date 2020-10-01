@@ -1,0 +1,14 @@
+# Set values and source this file.
+
+export SSH_KEY_NAME=
+export NEWPASS=
+export GIT_NAME=
+export GIT_EMAIL=
+
+export INSTALL_MONIT=false
+export MONIT_MAILSERVER_ADDRESS=
+export MONIT_MAILSERVER_PORT=
+export MONIT_MAILSERVER_USERNAME=
+export MONIT_MAILSERVER_PASSWORD=
+export MONIT_ALERT_ADDRESSEE=
+export MONIT_ALERT_SENDER=
