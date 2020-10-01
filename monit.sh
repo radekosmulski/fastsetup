@@ -15,7 +15,7 @@ do
   fi
 done
 
-echo pass | sudo -S apt-get install -y monit
+echo $PASS | sudo -S apt-get install -y monit
 
 sudo perl -p -i -e 's/set daemon 120/set daemon 30/' /etc/monit/monitrc
 sudo perl -p -i -e 's/#   with start delay 240/  with start delay 60/' /etc/monit/monitrc

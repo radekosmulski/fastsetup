@@ -37,7 +37,7 @@ ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Issue running sudo as user ubuntu"
-  echo pass | sudo -S shutdown -r now
+  echo $NEWPASS | sudo -S shutdown -r now
 EOF
 
 echo -e '\nDisconnected from vm and reconnecting over SSH'
@@ -59,7 +59,7 @@ EOF
 fi
 
 ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
-  echo pass | sudo -S apt install -y fail2ban
+  echo $NEWPASS | sudo -S apt install -y fail2ban
 EOF
 
 # Remove instance
