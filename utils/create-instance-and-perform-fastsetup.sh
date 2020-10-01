@@ -45,7 +45,7 @@ sleep 10
 
 ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
   cd fastsetup
-  GIT_NAME=$GIT_NAME GIT_EMAIL=$GIT_EMAIL source dotfiles.sh
+  GIT_NAME="$GIT_NAME" GIT_EMAIL=$GIT_EMAIL source dotfiles.sh
 
 EOF
 
