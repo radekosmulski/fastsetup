@@ -36,8 +36,8 @@ sudo tee -a /etc/monit/monitrc > /dev/null << EOF
   set mail-format { from: $MONIT_ALERT_SENDER }
 EOF
 
-sudo tee /etc/monit/conf.d/system.conf > /dev/null << EOF
-  check system localhost
+sudo tee /etc/monit/conf.d/system.conf > /dev/null << \EOF
+  check system $HOST
     if loadavg (1min) > 0.9 then alert
     if loadavg (5min) > 0.75 then alert
     if memory usage > 75% then alert
@@ -49,3 +49,4 @@ sudo tee /etc/monit/conf.d/system.conf > /dev/null << EOF
       if space usage > 80% then alert
 EOF
 
+sudo monit reload
