@@ -1,1 +1,1 @@
-IP=`openstack server show fs -f shell -c addresses | tr -cd [[:digit:],[=.=]]`
+IP=`openstack server show $NEWHOST -f shell -c addresses | tr -cd [[:digit:],[=.=]]`

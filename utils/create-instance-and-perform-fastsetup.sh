@@ -20,10 +20,10 @@ done
 fail () { echo $1 >&2; exit 1; }
 
 # Create instance
-IP=$(openstack server create $NEWHOST --image ubuntu-20.04-focal-minimal-cloudimg-amd64-release-20200501_raw --flavor t5sd.large --key-name $SSH_KEY_NAME --wait -c addresses -f value | cut -sd '=' -f 2)
+IP=$(openstack server create $NEWHOST --image ubuntu-20.04_LTS-focal-server-cloudimg-amd64-20200227_raw --flavor t5sd.large --key-name $SSH_KEY_NAME --wait -c addresses -f value | cut -sd '=' -f 2)
 
 # Perform fastsetup
-sleep 15
+sleep 25
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to clone fastsetup"
   sudo apt update && sudo apt -y install git
   git clone https://github.com/radekosmulski/fastsetup.git
@@ -31,7 +31,7 @@ EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
   cd fastsetup
-  sudo NEWHOST=$NEWHOST NEWPASS=$NEWPASS EMAIL=$EMAIL REBOOT=false ./ubuntu-initial.sh
+  sudo NEWHOST=$NEWHOST NEWPASS=$NEWPASS EMAIL=$EMAIL AUTO_REBOOT=$AUTO_REBOOT REBOOT=false ./ubuntu-initial.sh
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Issue running sudo as user ubuntu"
