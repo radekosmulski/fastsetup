@@ -8,9 +8,8 @@
 # want to work on additions / modifications, especially if you use the snapshotting functionality
 # available through the openstack CLI.
 
-set -e
-
-for VARIABLE in "$SSH_KEY_NAME" "$INSTALL_MONIT" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL"
+for VARIABLE in "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" "$INSTALL_MONIT" \
+  "$EMAIL" "$AUTO_REBOOT"
 do
   if [[ -z "$VARIABLE" ]]; then
     echo Please make sure you set all the needed environmental variables
@@ -18,11 +17,10 @@ do
   fi
 done
 
-function fail() { echo $1 ; exit 1 ; }
+fail () { echo $1 >&2; exit 1; }
 
 # Create instance
-openstack server create fs --image ubuntu-20.04-focal-minimal-cloudimg-amd64-release-20200501_raw --flavor t5sd.large --key-name $SSH_KEY_NAME --wait
-IP=`openstack server show fs -f shell -c addresses | tr -cd [[:digit:],[=.=]]`
+IP=$(openstack server create $NEWHOST --image ubuntu-20.04-focal-minimal-cloudimg-amd64-release-20200501_raw --flavor t5sd.large --key-name $SSH_KEY_NAME --wait -c addresses -f value | cut -sd '=' -f 2)
 
 # Perform fastsetup
 sleep 15
@@ -33,7 +31,7 @@ EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
   cd fastsetup
-  sudo NEWPASS=$NEWPASS REBOOT=false ./ubuntu-initial.sh
+  sudo NEWHOST=$NEWHOST NEWPASS=$NEWPASS EMAIL=$EMAIL REBOOT=false ./ubuntu-initial.sh
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Issue running sudo as user ubuntu"

@@ -1,9 +1,12 @@
 # Set values and source this file.
 
 export SSH_KEY_NAME=
+export NEWHOST=
 export NEWPASS=
+export EMAIL=
 export GIT_NAME=
 export GIT_EMAIL=
+export AUTO_REBOOT=
 
 export INSTALL_MONIT=false
 export MONIT_MAILSERVER_ADDRESS=
