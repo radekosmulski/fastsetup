@@ -8,6 +8,10 @@ export GIT_NAME=
 export GIT_EMAIL=
 export AUTO_REBOOT=
 
+export INSTALL_OPENSMTPD=false
+export ROOTMAIL=
+export SMTPPASS=
+
 export INSTALL_MONIT=false
 export MONIT_MAILSERVER_ADDRESS=
 export MONIT_MAILSERVER_PORT=

@@ -47,6 +47,12 @@ ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
 
 EOF
 
+if [ "$INSTALL_OPENSMTPD" = true ] ; then
+ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
+  echo $NEWPASS | sudo -S ROOTMAIL=$ROOTMAIL SMTPPASS=$SMTPPASS ./opensmtpd-install.sh
+EOF
+fi
+
 if [ "$INSTALL_MONIT" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
   cd fastsetup
