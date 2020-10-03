@@ -48,7 +48,7 @@ ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
 EOF
 
 if [ "$INSTALL_OPENSMTPD" = true ] ; then
-ssh ubuntu@$IP bash -e << EOF || fail "Sourcing dotfiles.sh failed"
+ssh ubuntu@$IP bash -e << EOF || fail "Running 'sudo opensmtpd-install.sh' failed"
   echo $NEWPASS | sudo -S ROOTMAIL=$ROOTMAIL SMTPPASS=$SMTPPASS ./opensmtpd-install.sh
 EOF
 fi
