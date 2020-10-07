@@ -19,11 +19,9 @@ done
 
 fail () { echo $1 >&2; exit 1; }
 
-# Create instance
-IP=$(openstack server create $NEWHOST --image ubuntu-20.04_LTS-focal-server-cloudimg-amd64-20200227_raw --flavor t5sd.large --key-name $SSH_KEY_NAME --network ext-net-no-nat --wait -c addresses -f value | cut -sd '=' -f 2)
+source set-IP.sh
 
 # Perform fastsetup
-sleep 30
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to clone fastsetup"
   sudo apt update && sudo apt -y install git
   git clone https://github.com/radekosmulski/fastsetup.git
@@ -51,7 +49,7 @@ if [ "$INSTALL_OPENSMTPD" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Running 'sudo opensmtpd-install.sh' failed"
   cd fastsetup
   echo $NEWPASS | sudo -S apt install -y dnsutils
-  echo $NEWPASS | sudo -S ROOTMAIL=$ROOTMAIL SMTPPASS=$SMTPPASS ./opensmtpd-install.sh
+  sudo ROOTMAIL=$ROOTMAIL SMTPPASS=$SMTPPASS ./opensmtpd-install.sh
 EOF
 fi
 
