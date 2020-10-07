@@ -65,6 +65,3 @@ fi
 ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
   echo $NEWPASS | sudo -S apt install -y fail2ban
 EOF
-
-# Remove instance
-#openstack server delete fs
