@@ -8,23 +8,23 @@
 # want to work on additions / modifications, especially if you use the snapshotting functionality
 # available through the openstack CLI.
 
-for VARIABLE in "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" "$INSTALL_MONIT" \
-  "$EMAIL" "$AUTO_REBOOT"
-do
-  if [[ -z "$VARIABLE" ]]; then
-    echo Please make sure you set all the needed environmental variables
-    exit 1
-  fi
-done
+#for VARIABLE in "$IP" "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" \
+  #"$INSTALL_MONIT" "$EMAIL" "$AUTO_REBOOT"
+#do
+  #if [[ -z "$VARIABLE" ]]; then
+    #echo Please make sure you set all the needed environmental variables
+    #exit 1
+  #fi
+#done
 
 fail () { echo $1 >&2; exit 1; }
-
-source set-IP.sh
 
 # Perform fastsetup
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to clone fastsetup"
   sudo apt update && sudo apt -y install git
   git clone https://github.com/radekosmulski/fastsetup.git
+  cd fastsetup
+  sudo cp 01-netcfg.yaml /etc/netplan
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
@@ -59,6 +59,13 @@ ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
   NEWPASS=$NEWPASS MONIT_MAILSERVER_ADDRESS=$MONIT_MAILSERVER_ADDRESS MONIT_MAILSERVER_PORT=$MONIT_MAILSERVER_PORT \
   MONIT_MAILSERVER_USERNAME=$MONIT_MAILSERVER_USERNAME MONIT_MAILSERVER_PASSWORD=$MONIT_MAILSERVER_PASSWORD \
   MONIT_ALERT_ADDRESSEE=$MONIT_ALERT_ADDRESSEE MONIT_ALERT_SENDER=$MONIT_ALERT_SENDER source monit.sh
+EOF
+fi
+
+if [ "$INSTALL_RAILS" = true ] ; then
+ssh ubuntu@$IP bash -e << EOF || fail "Installing rails failed"
+  cd fastsetup
+  NEWPASS=$NEWPASS ./rails-install.sh
 EOF
 fi
 
