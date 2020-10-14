@@ -65,7 +65,23 @@ fi
 if [ "$INSTALL_RAILS" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Installing rails failed"
   cd fastsetup
-  NEWPASS=$NEWPASS ./rails-install.sh
+  NEWPASS=$NEWPASS RUBY_VERSION=$RUBY_VERSION ./rails-install.sh
+EOF
+fi
+
+if [ "$INSTALL_CADDY" = true ] ; then
+ssh ubuntu@$IP bash -e << EOF || fail "Installing caddy failed"
+  cd fastsetup
+  echo "deb [trusted=yes] https://apt.fury.io/caddy/ /" | sudo tee -a /etc/apt/sources.list.d/caddy-fury.list
+  $NEWPASS
+  echo $NEWPASS | sudo -S apt update
+  echo $NEWPASS | sudo -S apt install -y caddy
+
+  DOMAIN=$(hostname -d)
+  perl -pi -e "s/DOMAIN/$DOMAIN/g" Caddyfile-rails
+  perl -pi -e "s/APPNAME/$CADDY_APPNAME/g" Caddyfile-rails
+  echo $NEWPASS | sudo -S cp Caddyfile-rails /etc/caddy/Caddyfile
+  echo $NEWPASS | sudo -S systemctl reload caddy
 EOF
 fi
 
