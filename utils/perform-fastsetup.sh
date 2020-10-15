@@ -8,14 +8,14 @@
 # want to work on additions / modifications, especially if you use the snapshotting functionality
 # available through the openstack CLI.
 
-#for VARIABLE in "$IP" "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" \
-  #"$INSTALL_MONIT" "$EMAIL" "$AUTO_REBOOT"
-#do
-  #if [[ -z "$VARIABLE" ]]; then
-    #echo Please make sure you set all the needed environmental variables
-    #exit 1
-  #fi
-#done
+for VARIABLE in "$IP" "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" \
+  "$INSTALL_MONIT" "$EMAIL" "$AUTO_REBOOT"
+do
+  if [[ -z "$VARIABLE" ]]; then
+    echo Please make sure you set all the needed environmental variables
+    exit 1
+  fi
+done
 
 fail () { echo $1 >&2; exit 1; }
 
@@ -70,18 +70,17 @@ EOF
 fi
 
 if [ "$INSTALL_CADDY" = true ] ; then
+if ! openstack server show $NEWHOST | grep -q 'AllowHTTPInbound'; then
+  openstack server add security group $NEWHOST AllowHTTPInbound
+fi
+if ! openstack server show $NEWHOST | grep -q 'AllowHTTPSInbound'; then
+  openstack server add security group $NEWHOST AllowHTTPSInbound
+fi
+
 ssh ubuntu@$IP bash -e << EOF || fail "Installing caddy failed"
   cd fastsetup
-  echo "deb [trusted=yes] https://apt.fury.io/caddy/ /" | sudo tee -a /etc/apt/sources.list.d/caddy-fury.list
-  $NEWPASS
-  echo $NEWPASS | sudo -S apt update
-  echo $NEWPASS | sudo -S apt install -y caddy
-
-  DOMAIN=$(hostname -d)
-  perl -pi -e "s/DOMAIN/$DOMAIN/g" Caddyfile-rails
-  perl -pi -e "s/APPNAME/$CADDY_APPNAME/g" Caddyfile-rails
-  echo $NEWPASS | sudo -S cp Caddyfile-rails /etc/caddy/Caddyfile
-  echo $NEWPASS | sudo -S systemctl reload caddy
+  NEWPASS=$NEWPASS ./caddy-install.sh
+  NEWPASS=$NEWPASS CADDY_APPNAME=$CADDY_APPNAME ./caddy-rails-config.sh
 EOF
 fi
 

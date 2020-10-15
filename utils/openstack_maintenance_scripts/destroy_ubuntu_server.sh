@@ -9,7 +9,7 @@ fi
 if [ "$3" != "--yes-i-really-really-mean-it" ]
 then
   echo
-echo "Usage: ./destroy_test_ubuntu_servers.sh <hostname> <remove floating ip yes/no> --yes-i-really-really-mean-it"
+echo "Usage: ./destroy_ubuntu_server.sh <hostname> <remove floating ip yes/no> --yes-i-really-really-mean-it"
   echo
   echo "Description: Looping through each server name, deleting the server first, and then its volume."
   echo "             Note that if there are multiple servers with the same name, all servers by that"

@@ -17,35 +17,41 @@ do
   fi
 done
 
-echo
-echo "Create a security group with a rule to allow SSH inbound..."
-results=$(openstack security group create AllowSSHInbound)
-results=$(openstack security group rule create \
-  --remote-ip 0.0.0.0/0 \
-  --dst-port 22 \
-  --ingress \
-  --protocol tcp \
-  AllowSSHInbound)
+if ! openstack security group list | grep -q 'AllowSSHInbound'; then
+  echo
+  echo "Create a security group with a rule to allow SSH inbound..."
+  results=$(openstack security group create AllowSSHInbound)
+  results=$(openstack security group rule create \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port 22 \
+    --ingress \
+    --protocol tcp \
+    AllowSSHInbound)
+fi
 
-echo
-echo "Create a security group with a rule to allow HTTP inbound..."
-results=$(openstack security group create AllowHTTPInbound)
-results=$(openstack security group rule create \
-  --remote-ip 0.0.0.0/0 \
-  --dst-port 80 \
-  --ingress \
-  --protocol tcp \
-  AllowHTTPInbound)
+if ! openstack security group list | grep -q 'AllowHTTPInbound'; then
+  echo
+  echo "Create a security group with a rule to allow HTTP inbound..."
+  results=$(openstack security group create AllowHTTPInbound)
+  results=$(openstack security group rule create \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port 80 \
+    --ingress \
+    --protocol tcp \
+    AllowHTTPInbound)
+fi
 
-echo
-echo "Create a security group with a rule to allow HTTPS inbound..."
-results=$(openstack security group create AllowHTTPSInbound)
-results=$(openstack security group rule create \
-  --remote-ip 0.0.0.0/0 \
-  --dst-port 443 \
-  --ingress \
-  --protocol tcp \
-  AllowHTTPSInbound)
+if ! openstack security group list | grep -q 'AllowHTTPSInbound'; then
+  echo
+  echo "Create a security group with a rule to allow HTTPS inbound..."
+  results=$(openstack security group create AllowHTTPSInbound)
+  results=$(openstack security group rule create \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port 443 \
+    --ingress \
+    --protocol tcp \
+    AllowHTTPSInbound)
+fi
 
 # Create instance
 IP=$(openstack server create $NEWHOST \

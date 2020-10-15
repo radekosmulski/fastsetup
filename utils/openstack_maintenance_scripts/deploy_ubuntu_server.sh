@@ -11,7 +11,7 @@ then
   echo
   echo "NOTE: You should use ./deploy_network_and_router.sh prior to using this script."
   echo
-  echo "Usage: ./deploy_ubuntu_servers.sh <hostname> <key name> <create floating ips yes/no> <server flavor>"
+  echo "Usage: ./deploy_ubuntu_server.sh <hostname> <key name> <create floating ips yes/no> <server flavor>"
   echo
   echo "Description: This script creates one or more VMs based on the flavor definition (CPU and Memory definition),"
   echo "             images a volume with an operating system, attaches the volume as the boot device, connects the"
