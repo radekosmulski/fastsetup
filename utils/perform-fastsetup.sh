@@ -24,7 +24,6 @@ ssh ubuntu@$IP bash -e << EOF || fail "Failed to clone fastsetup"
   sudo apt update && sudo apt -y install git
   git clone https://github.com/radekosmulski/fastsetup.git
   cd fastsetup
-  sudo cp 01-netcfg.yaml /etc/netplan
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Failed to run 'sudo ./ubuntu-initial.sh'"
