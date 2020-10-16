@@ -1,4 +1,4 @@
-DOMAIN {
+IP {
   root * /home/ubuntu/APPNAME/public
   @notStatic not path /assets/* /packs/* *png *ico *txt
 
@@ -9,7 +9,20 @@ DOMAIN {
   encode zstd gzip
 }
 
-www.DOMAIN {
-  redir https://DOMAIN{uri}
-}
+# Uncomment the lines below after pointing the A record of your domain
+# to the public IP address of this instance
 
+# DOMAIN {
+#   root * /home/ubuntu/APPNAME/public
+#   @notStatic not path /assets/* /packs/* *png *ico *txt
+#
+#   reverse_proxy @notStatic localhost:8080
+#
+#   file_server
+#
+#   encode zstd gzip
+# }
+#
+# www.DOMAIN {
+#   redir https://DOMAIN{uri}
+# }

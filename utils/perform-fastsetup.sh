@@ -53,15 +53,6 @@ ssh ubuntu@$IP bash -e << EOF || fail "Running 'sudo opensmtpd-install.sh' faile
 EOF
 fi
 
-if [ "$INSTALL_MONIT" = true ] ; then
-ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
-  cd fastsetup
-  NEWPASS=$NEWPASS MONIT_MAILSERVER_ADDRESS=$MONIT_MAILSERVER_ADDRESS MONIT_MAILSERVER_PORT=$MONIT_MAILSERVER_PORT \
-  MONIT_MAILSERVER_USERNAME=$MONIT_MAILSERVER_USERNAME MONIT_MAILSERVER_PASSWORD=$MONIT_MAILSERVER_PASSWORD \
-  MONIT_ALERT_ADDRESSEE=$MONIT_ALERT_ADDRESSEE MONIT_ALERT_SENDER=$MONIT_ALERT_SENDER source monit.sh
-EOF
-fi
-
 if [ "$INSTALL_RAILS" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Installing rails failed"
   cd fastsetup
@@ -80,10 +71,19 @@ fi
 ssh ubuntu@$IP bash -e << EOF || fail "Installing caddy failed"
   cd fastsetup
   NEWPASS=$NEWPASS ./caddy-install.sh
-  NEWPASS=$NEWPASS CADDY_APPNAME=$CADDY_APPNAME ./caddy-rails-config.sh
+  NEWPASS=$NEWPASS CADDY_APPNAME=$CADDY_APPNAME  DOMAIN=$IP ./caddy-rails-config.sh
 EOF
 fi
 
 ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
   echo $NEWPASS | sudo -S apt install -y fail2ban
 EOF
+
+if [ "$INSTALL_MONIT" = true ] ; then
+ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
+  cd fastsetup
+  NEWPASS=$NEWPASS MONIT_MAILSERVER_ADDRESS=$MONIT_MAILSERVER_ADDRESS MONIT_MAILSERVER_PORT=$MONIT_MAILSERVER_PORT \
+  MONIT_MAILSERVER_USERNAME=$MONIT_MAILSERVER_USERNAME MONIT_MAILSERVER_PASSWORD=$MONIT_MAILSERVER_PASSWORD \
+  MONIT_ALERT_ADDRESSEE=$MONIT_ALERT_ADDRESSEE MONIT_ALERT_SENDER=$MONIT_ALERT_SENDER source monit.sh
+EOF
+fi
