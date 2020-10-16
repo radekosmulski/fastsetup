@@ -71,7 +71,7 @@ fi
 ssh ubuntu@$IP bash -e << EOF || fail "Installing caddy failed"
   cd fastsetup
   NEWPASS=$NEWPASS ./caddy-install.sh
-  NEWPASS=$NEWPASS CADDY_APPNAME=$CADDY_APPNAME DOMAIN=$IP ./caddy-rails-config.sh
+  NEWPASS=$NEWPASS CADDY_APPNAME=$CADDY_APPNAME IP=$IP ./caddy-rails-config.sh
 EOF
 fi
 
