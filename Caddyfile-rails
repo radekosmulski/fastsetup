@@ -1,4 +1,4 @@
-IP {
+http:// {
   root * /home/ubuntu/APPNAME/public
   @notStatic not path /assets/* /packs/* *png *ico *txt
 
