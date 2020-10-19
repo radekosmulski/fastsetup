@@ -78,6 +78,12 @@ ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
   echo $NEWPASS | sudo -S apt install -y fail2ban
 EOF
 
+ssh ubuntu@$IP bash -e << EOF || fail "Performing misc setup failed"
+  { echo $NEWPASS; echo fs.inotify.max_user_watches=524288; } | sudo tee -a /etc/sysctl.conf && sudo -S sysctl -p
+  sudo apt-get install git-lfs
+  git lfs install
+EOF
+
 if [ "$INSTALL_MONIT" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
   cd fastsetup
