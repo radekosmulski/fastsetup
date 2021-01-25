@@ -1,13 +1,12 @@
 # This script uses the openstack api. It was developed to work with https://www.genesishosting.com/.
 #
 # What are it's uses? It allows you to document and retain the configuration steps for creating
-# an instance. All you have to do is to retain the template  you used to configure
+# an instance. All you have to do is to retain the template you used to configure
 # the instance (for a starting point please see instance_templates/default.sh).
 #
 # Further to that, I use this script to help me test fastsetup. It is also very helpful when you
 # want to work on additions / modifications, especially if you use the snapshotting functionality
 # available through the openstack CLI.
-
 for VARIABLE in "$IP" "$SSH_KEY_NAME" "$NEWHOST" "$NEWPASS" "$GIT_NAME" "$GIT_EMAIL" \
   "$INSTALL_MONIT" "$EMAIL" "$AUTO_REBOOT"
 do
@@ -79,10 +78,12 @@ ssh ubuntu@$IP bash -e << EOF || fail "Installing fail2ban failed"
 EOF
 
 ssh ubuntu@$IP bash -e << EOF || fail "Performing misc setup failed"
-  { echo $NEWPASS; echo fs.inotify.max_user_watches=524288; } | sudo tee -a /etc/sysctl.conf && sudo -S sysctl -p
+  { echo $NEWPASS; echo fs.inotify.max_user_watches=524288; } | sudo -S tee -a /etc/sysctl.conf && sudo -S sysctl -p
   sudo apt-get install git-lfs
-  git lfs install
+  git lfs install --skip-repo
 EOF
+
+exit 0
 
 if [ "$INSTALL_MONIT" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
