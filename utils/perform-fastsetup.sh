@@ -83,8 +83,6 @@ ssh ubuntu@$IP bash -e << EOF || fail "Performing misc setup failed"
   git lfs install --skip-repo
 EOF
 
-exit 0
-
 if [ "$INSTALL_MONIT" = true ] ; then
 ssh ubuntu@$IP bash -e << EOF || fail "Setting up monit failed"
   cd fastsetup
