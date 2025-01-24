@@ -80,6 +80,9 @@ apt-fast -qy install vim-nox python3-powerline rsync ubuntu-drivers-common pytho
 env DEBIAN_FRONTEND=noninteractive APT_LISTCHANGES_FRONTEND=mail apt-fast full-upgrade -qy -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'
 sudo apt -qy autoremove
 
+# Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 cat << 'EOF' >> ~/.ssh/config
