@@ -5,7 +5,7 @@ First, do basic ubuntu configuration, such as updating packages, and turning on 
 
 ```
 sudo apt update && sudo apt -y install git
-git clone https://github.com/fastai/fastsetup.git
+git clone https://github.com/radekosmulski/fastsetup.git
 cd fastsetup
 sudo ./ubuntu-initial.sh
 # wait a couple of minutes for reboot, then ssh back in
