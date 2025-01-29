@@ -36,26 +36,27 @@ echo $NEWHOST > /etc/hostname
 # Add hostname to /etc/hosts if not already present
 grep -q $NEWHOST /etc/hosts || echo "127.0.0.1 $NEWHOST" >> /etc/hosts
 
-if [[ $SUDO_USER = "root" ]]; then
-  echo "You are running as root, so let's create a new user for you"
-  [[ $NEWUSER ]] && SUDO_USER=$NEWUSER || read -e -p "Please enter the username for your new user: " SUDO_USER
-  [[ -n $SUDO_USER ]] || fail Empty username not permitted
-  adduser $SUDO_USER --gecos ''
-  usermod -aG sudo $SUDO_USER
-  HOME=/home/$SUDO_USER
-  echo "$SUDO_USER  ALL=(ALL:ALL) ALL" >> /etc/sudoers
-  cp -r "$PWD" ~/
-  chown -R $SUDO_USER:$SUDO_USER ~/
-fi
-[[ -z $EMAIL ]] && read -e -p "Enter your email address: " EMAIL
-
-if [[ $NEWPASS ]]; then
-  echo "$SUDO_USER:$NEWPASS" | chpasswd
-else
-  read -e -p "We recommend setting your password. Set it now? [y/n] " -i y
-  [[ $REPLY = y* ]] && passwd $SUDO_USER
-fi
-echo 'Defaults        timestamp_timeout=3600' >> /etc/sudoers
+# This doesn't seem to do anything?!
+# if [[ $SUDO_USER = "root" ]]; then
+#   echo "You are running as root, so let's create a new user for you"
+#   [[ $NEWUSER ]] && SUDO_USER=$NEWUSER || read -e -p "Please enter the username for your new user: " SUDO_USER
+#   [[ -n $SUDO_USER ]] || fail Empty username not permitted
+#   adduser $SUDO_USER --gecos ''
+#   usermod -aG sudo $SUDO_USER
+#   HOME=/home/$SUDO_USER
+#   echo "$SUDO_USER  ALL=(ALL:ALL) ALL" >> /etc/sudoers
+#   cp -r "$PWD" ~/
+#   chown -R $SUDO_USER:$SUDO_USER ~/
+# fi
+# [[ -z $EMAIL ]] && read -e -p "Enter your email address: " EMAIL
+# 
+# if [[ $NEWPASS ]]; then
+#   echo "$SUDO_USER:$NEWPASS" | chpasswd
+# else
+#   read -e -p "We recommend setting your password. Set it now? [y/n] " -i y
+#   [[ $REPLY = y* ]] && passwd $SUDO_USER
+# fi
+# echo 'Defaults        timestamp_timeout=3600' >> /etc/sudoers
 
 if [[ ! -s ~/.ssh/authorized_keys ]]; then
   [[ -z $PUB_KEY ]] && read -e -p "Please paste your public key here: " PUB_KEY
