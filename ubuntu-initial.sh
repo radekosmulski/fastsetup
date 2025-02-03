@@ -8,7 +8,7 @@ if [[ $(grep -i Microsoft /proc/version) ]]; then
     fail "Running on WSL, try running 'sudo ./ubuntu-wsl.sh'"
 fi
 
-# First ask if user wants to change hostname
+# Ask if user wants to change hostname
 read -e -p "Do you want to change the hostname? (y/N): " CHANGE_HOSTNAME
 
 if [[ "${CHANGE_HOSTNAME,,}" =~ ^y(es)?$ ]]; then
