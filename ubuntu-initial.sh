@@ -8,33 +8,38 @@ if [[ $(grep -i Microsoft /proc/version) ]]; then
     fail "Running on WSL, try running 'sudo ./ubuntu-wsl.sh'"
 fi
 
-# Keep prompting for hostname until a valid one is provided
-while true; do
-    # If NEWHOST is empty, prompt user for input
-    [[ -z $NEWHOST ]] && read -e -p "Enter hostname to set: " NEWHOST
-    
-    # Validate hostname against RFC 1123 requirements:
-    # - Must start with alphanumeric
-    # - Can contain alphanumeric, hyphens, and dots
-    # - Each label (part between dots) must be 1-63 chars
-    # - Cannot start/end labels with hyphens
-    # - Total length must not exceed 253 characters
-    if [[ ! $NEWHOST =~ ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$ ]] || \
-       [[ ${#NEWHOST} -gt 253 ]]; then
-        echo "Invalid hostname format. Please try again."
-        NEWHOST=""      # Clear invalid hostname
-        continue        # Restart the loop
-    fi
-    
-    break  # Exit loop if hostname is valid
-done
+# First ask if user wants to change hostname
+read -e -p "Do you want to change the hostname? (y/N): " CHANGE_HOSTNAME
 
-# Set the hostname in the system
-hostname $NEWHOST
-echo $NEWHOST > /etc/hostname
+if [[ "${CHANGE_HOSTNAME,,}" =~ ^y(es)?$ ]]; then
+    # Keep prompting for hostname until a valid one is provided
+    while true; do
+        # If NEWHOST is empty, prompt user for input
+        [[ -z $NEWHOST ]] && read -e -p "Enter hostname to set: " NEWHOST
+        
+        # Validate hostname against RFC 1123 requirements:
+        # - Must start with alphanumeric
+        # - Can contain alphanumeric, hyphens, and dots
+        # - Each label (part between dots) must be 1-63 chars
+        # - Cannot start/end labels with hyphens
+        # - Total length must not exceed 253 characters
+        if [[ ! $NEWHOST =~ ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$ ]] || \
+           [[ ${#NEWHOST} -gt 253 ]]; then
+            echo "Invalid hostname format. Please try again."
+            NEWHOST=""      # Clear invalid hostname
+            continue        # Restart the loop
+        fi
+        
+        break  # Exit loop if hostname is valid
+    done
 
-# Add hostname to /etc/hosts if not already present
-grep -q $NEWHOST /etc/hosts || echo "127.0.0.1 $NEWHOST" >> /etc/hosts
+    # Set the hostname in the system
+    hostname $NEWHOST
+    echo $NEWHOST > /etc/hostname
+
+    # Add hostname to /etc/hosts if not already present
+    grep -q $NEWHOST /etc/hosts || echo "127.0.0.1 $NEWHOST" >> /etc/hosts
+fi
 
 # This doesn't seem to do anything?!
 # if [[ $SUDO_USER = "root" ]]; then
